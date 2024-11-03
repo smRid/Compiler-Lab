@@ -1,0 +1,20 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+"void"|"int"|"float"|"double"|"char"|"if"|"else"|"while"|"for"|"do"|"break"|"continue"|"return"|"void"|"main"                    { printf("%s keyword\n", yytext); }
+[0-9]+                      { printf("%s digit\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]*      { printf("%s identifier\n", yytext); }
+"//"(.*)"\n"                 { int n = strlen(yytext); int i = 0; while(i < n - 1) {if ((yytext[i] >= 0 && yytext[i] <= 9) || (yytext[i] >= 'a' && yytext[i] <= 'z') || (yytext[i] >= 'A' && yytext[i] <= 'Z') || yytext[i] == ' ' || yytext[i] == '/') {printf("%c", yytext[i]);} else break; i++;} printf(" comment\n");}
+"//"(.*)                     { printf("//%s comment\n", yytext+2); }
+[ \t\n]                     ;  // Skip whitespace and newline characters
+.                           ;  // Ignore any other character
+%%
+
+int main() {
+    yyin = stdin;
+    yylex();
+    return 0;
+}
